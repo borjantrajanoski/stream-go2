@@ -1,4 +1,4 @@
-module borjantrajanoski/stream-go2
+module github.com/borjantrajanoski/stream-go2
 
 go 1.13
 
