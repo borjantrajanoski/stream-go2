@@ -19,6 +19,7 @@ func TestConfig(t *testing.T) {
 	testCases := []struct {
 		key             string
 		secret          string
+		token           string
 		shouldError     bool
 		opts            []ClientOption
 		expectedRegion  string
@@ -52,7 +53,7 @@ func TestConfig(t *testing.T) {
 		},
 	}
 	for _, tc := range testCases {
-		c, err := NewClient(tc.key, tc.secret, tc.opts...)
+		c, err := NewClient(tc.key, tc.secret, tc.token, tc.opts...)
 		if tc.shouldError {
 			assert.Error(t, err)
 			continue

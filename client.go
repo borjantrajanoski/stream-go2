@@ -11,7 +11,7 @@ import (
 	"os"
 	"strings"
 
-	jwt "gopkg.in/dgrijalva/jwt-go.v3"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 // Client is a Stream API client used for retrieving feeds and performing API
@@ -34,16 +34,22 @@ type Requester interface {
 
 // NewClient builds a new Client with the provided API key and secret. It can be
 // configured further by passing any number of ClientOption parameters.
-func NewClient(key, secret string, opts ...ClientOption) (*Client, error) {
-	if key == "" || secret == "" {
+func NewClient(key, secret, token string, opts ...ClientOption) (*Client, error) {
+
+	if key == "" || secret == "" && token == "" {
 		return nil, errMissingCredentials
 	}
+
+	if secret != "" && token != "" {
+		return nil, errTooMuchCredentials
+	}
+
 	c := &Client{
 		key: key,
 		requester: &http.Client{
 			Transport: &http.Transport{},
 		},
-		authenticator: authenticator{secret: secret},
+		authenticator: authenticator{secret: secret, token: token},
 	}
 	for _, opt := range opts {
 		opt(c)
@@ -58,9 +64,10 @@ func NewClient(key, secret string, opts ...ClientOption) (*Client, error) {
 func NewClientFromEnv() (*Client, error) {
 	key := os.Getenv("STREAM_API_KEY")
 	secret := os.Getenv("STREAM_API_SECRET")
+	token := os.Getenv("STREAM_API_TOKEN")
 	region := os.Getenv("STREAM_API_REGION")
 	version := os.Getenv("STREAM_API_VERSION")
-	return NewClient(key, secret, WithAPIRegion(region), WithAPIVersion(version))
+	return NewClient(key, secret, token, WithAPIRegion(region), WithAPIVersion(version))
 }
 
 // ClientOption is a function used for adding specific configuration options to

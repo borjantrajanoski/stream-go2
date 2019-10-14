@@ -10,7 +10,7 @@ import (
 	stream "github.com/GetStream/stream-go2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	jwt "gopkg.in/dgrijalva/jwt-go.v3"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 func TestHeaders(t *testing.T) {

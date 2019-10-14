@@ -5,6 +5,7 @@ import (
 )
 
 var (
+	errTooMuchCredentials = fmt.Errorf("either use secret or token")
 	errMissingCredentials = fmt.Errorf("missing API key or secret")
 	errInvalidUserID      = fmt.Errorf("invalid userID provided")
 )

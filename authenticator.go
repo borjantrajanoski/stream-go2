@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	jwt "gopkg.in/dgrijalva/jwt-go.v3"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type authFunc func(*http.Request) error
@@ -45,6 +45,7 @@ var actions = map[string]action{
 
 type authenticator struct {
 	secret string
+	token string
 }
 
 func (a authenticator) feedID(feed Feed) string {
@@ -128,6 +129,11 @@ func (a authenticator) signAnalyticsRedirectEndpoint(endpoint *endpoint) error {
 }
 
 func (a authenticator) jwtSignatureFromClaims(claims jwt.MapClaims) (string, error) {
+
+	if a.token != "" {
+		return a.token, nil
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(a.secret))
 }
